@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Twinkle Task - Register</title>
+
+  <!-- Bootstrap & Fonts -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #f2f2f2;
+    }
+
+    .main-container {
+      display: flex;
+      height: 100vh;
+    }
+
+    .left {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 60px;
+    }
+
+    .form-wrapper {
+      max-width: 480px;
+      width: 100%;
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .register-title {
+      font-family: 'Pacifico', cursive;
+      font-size: 38px;
+      color: #000;
+      text-align: center;
+    }
+
+    h2 {
+      text-align: center;
+      font-weight: 600;
+      font-size: 24px;
+    }
+
+    .form-control {
+      border: 2px solid #ffdd00;
+      border-radius: 8px;
+      height: 42px;
+      font-size: 14px;
+    }
+
+    .btn-warning {
+      background-color: #ffdd00;
+      color: #000;
+      font-weight: 600;
+      font-size: 16px;
+      height: 45px;
+      border-radius: 8px;
+    }
+
+    .login-text {
+      font-size: 13px;
+      color: #7f7b7b;
+      text-align: center;
+    }
+
+    .highlight {
+      color: #000;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .right {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .right img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 12px;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      color: #888;
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column;
+      }
+      .right { display: none; }
+      .left { padding: 30px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="main-container">
+  <div class="left">
+    <div class="form-wrapper mx-auto">
+      <h1 class="register-title">Twinkle Task</h1>
+      <h2 class="my-3">Register</h2>
+
+      <form id="registerForm">
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input type="email" id="email" class="form-control" placeholder="Masukkan email" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Phone</label>
+          <input type="tel" id="phone" class="form-control" placeholder="Masukkan nomor telepon" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="password" class="form-control" placeholder="Masukkan password" required>
+            <button type="button" class="toggle-password" onclick="togglePassword()">
+              <i class="fa-solid fa-eye" id="eyeIcon"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-warning w-100 mb-3">Register</button>
+
+        <div class="login-text">
+          Already have an account? <a href="login.html" class="highlight">Log In</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="right">
+    <img src="assets/bg-login.jpg" alt="background">
+  </div>
+</div>
+
+<script>
+/* ========================
+   TOGGLE PASSWORD
+======================== */
+function togglePassword() {
+  const passwordInput = document.getElementById('password');
+  const eyeIcon = document.getElementById('eyeIcon');
+
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text';
+    eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
+  } else {
+    passwordInput.type = 'password';
+    eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
+  }
+}
+
+/* ========================
+   REGISTER SYSTEM
+======================== */
+
+if(!localStorage.getItem("users")){
+  localStorage.setItem("users", JSON.stringify([]));
+}
+
+document.getElementById('registerForm').addEventListener('submit', function(e){
+  e.preventDefault();
+
+  const email = document.getElementById('email').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const password = document.getElementById('password').value.trim();
+
+  let users = JSON.parse(localStorage.getItem("users"));
+
+  // cek email sudah terdaftar
+  const exists = users.find(u => u.email === email);
+  if(exists){
+    alert("Email sudah terdaftar!");
+    return;
+  }
+
+  const newUser = {
+    email: email,
+    phone: phone,
+    password: password,
+    name: email.split("@")[0],
+    role: "user"
+  };
+
+  users.push(newUser);
+  localStorage.setItem("users", JSON.stringify(users));
+
+  // auto login setelah register
+  localStorage.setItem("isLogin", "true");
+  localStorage.setItem("userData", JSON.stringify(newUser));
+
+  alert("Registrasi berhasil!");
+  window.location.href = "index.html"; // redirect ke home
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

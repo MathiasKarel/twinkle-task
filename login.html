@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Twinkle Task - Login</title>
+
+  <!-- Bootstrap & Fonts -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #f2f2f2;
+    }
+
+    .main-container {
+      display: flex;
+      height: 100vh;
+    }
+
+    .left {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 100px;
+    }
+
+    .form-wrapper {
+      width: 100%;
+      max-width: 480px;
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-title {
+      font-family: 'Pacifico', cursive;
+      font-size: 42px;
+      color: #000;
+      text-align: center;
+    }
+
+    h2 {
+      text-align: center;
+      font-weight: 600;
+      font-size: 24px;
+    }
+
+    .form-control {
+      border: 2px solid #ffdd00;
+      border-radius: 8px;
+      height: 42px;
+      font-size: 14px;
+    }
+
+    .btn-warning {
+      background-color: #ffdd00;
+      color: #000;
+      font-weight: 600;
+      font-size: 16px;
+      height: 45px;
+      border-radius: 8px;
+    }
+
+    .signup-text {
+      font-size: 13px;
+      color: #7f7b7b;
+      text-align: center;
+    }
+
+    .highlight {
+      color: #000;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .right {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .right img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 12px;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      color: #888;
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column;
+      }
+      .right { display: none; }
+      .left { padding: 30px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="main-container">
+
+  <!-- Left -->
+  <div class="left">
+    <div class="form-wrapper">
+      <h1 class="login-title">Twinkle Task</h1>
+      <h2 class="my-3">Login</h2>
+
+      <form id="loginForm">
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input type="email" id="email" class="form-control" placeholder="Masukkan email" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="password" class="form-control" placeholder="Masukkan password" required>
+            <button type="button" class="toggle-password" onclick="togglePassword()">
+              <i class="fa-solid fa-eye" id="eyeIcon"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-warning w-100 mb-3">Login</button>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="form-check m-0">
+            <input class="form-check-input" type="checkbox" id="rememberMe">
+            <label class="form-check-label">Save Log In info</label>
+          </div>
+          <a href="#" class="highlight" style="font-size: 13px;">Forgot Password?</a>
+        </div>
+
+        <div class="signup-text mt-2">
+          Don't have an account? <a href="register.html" class="highlight">Sign up</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Right -->
+  <div class="right">
+    <img src="assets/bg-login.jpg" alt="background">
+  </div>
+
+</div>
+
+<script>
+/* ========================
+   PASSWORD TOGGLE
+======================== */
+function togglePassword() {
+  const passwordInput = document.getElementById('password');
+  const eyeIcon = document.getElementById('eyeIcon');
+
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text';
+    eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
+  } else {
+    passwordInput.type = 'password';
+    eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
+  }
+}
+
+/* ========================
+   AUTH SYSTEM
+======================== */
+
+// akun demo (nanti bisa ganti dari register system)
+const USERS = [
+  {
+    email: "user@gmail.com",
+    password: "user123",
+    name: "Admin Twinkle"
+  }
+];
+
+// kalau sudah login → auto redirect
+if(localStorage.getItem("isLogin") === "true"){
+  window.location.href = "index.html";
+}
+
+document.getElementById('loginForm').addEventListener('submit', function(e){
+  e.preventDefault();
+
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
+
+  const user = USERS.find(u => u.email === email && u.password === password);
+
+  if(user){
+    // simpan session login
+    localStorage.setItem("isLogin", "true");
+    localStorage.setItem("userData", JSON.stringify(user));
+
+    // redirect
+    window.location.href = "index.html";
+  }else{
+    alert("Email atau password salah!");
+  }
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
